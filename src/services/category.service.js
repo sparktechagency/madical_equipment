@@ -10,7 +10,12 @@ const allCategory = async() =>{
     return await Category.find({isDeleted:false}).select('name')
 }
 
-const singleCategory = async(id ,name) =>{
+const findCategoryByID = async(id) =>{
+    const  category  = await Category.findById(id)
+    if (!category || category.isDeleted) throw new ApiError(httpStatus.BAD_REQUEST, "category not found!")
+    return category
+}
+const updateCategory = async(id ,name) =>{
     const  category  = await Category.findById(id)
     if (!category || category.isDeleted) throw new ApiError(httpStatus.BAD_REQUEST, "category not found!")
     category.name = name
@@ -30,7 +35,8 @@ const deleteCategory = async(id) =>{
 module.exports = {
     createCategory,
     allCategory,
-    singleCategory,
+    findCategoryByID,
+    updateCategory,
     deleteCategory
 }
 

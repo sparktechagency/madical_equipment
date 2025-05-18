@@ -1,7 +1,12 @@
+const httpStatus = require('http-status');
 const { Product } = require('../models');
+const ApiError = require('../utils/ApiError');
+const { findCategoryByID } = require('./category.service');
 const {ObjectId} = require('mongoose').Types
 
 const createProduct = async (payload) => {
+   const category =await findCategoryByID(payload?.category)
+   if(!category) throw new ApiError(httpStatus.NOT_FOUND, "provide valid category !")
   return await Product.create(payload);
 };
 

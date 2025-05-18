@@ -38,7 +38,7 @@ const UpdateCategoryName = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
 
-  await categoryService.singleCategory(id, name);
+  await categoryService.updateCategory(id, name);
 
   res.status(httpStatus.OK).json(
     response({
