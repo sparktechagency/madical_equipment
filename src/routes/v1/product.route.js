@@ -50,7 +50,6 @@ router.get(
   productController.AllProducts
 );
 
-
 router.get(
   '/self',
   auth('common'),
