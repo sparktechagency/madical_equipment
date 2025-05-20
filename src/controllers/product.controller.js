@@ -126,7 +126,7 @@ const SingleProduct = catchAsync(async (req, res) => {
   const productId = req.params.id;
 
   const product = await productService.getSingleProductById(productId);
-  if (!product) throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+  if (!product || product.isDeleted) throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
 
   res.status(httpStatus.OK).json(
     response({
@@ -171,6 +171,21 @@ const {category, status} = req.query
   );
 });
 
+// requested product list
+const ProductsRequest = catchAsync(async (req, res) => {
+
+  const products = await productService.allProducts({status:"pending"});
+
+  res.status(httpStatus.OK).json(
+    response({
+      message: 'pending Products retrieved success',
+      status: 'OK',
+      statusCode: httpStatus.OK,
+      data: products,
+    })
+  );
+});
+
 
 module.exports = {
   createProduct,
@@ -180,5 +195,6 @@ module.exports = {
   declineProduct,
   SingleProduct,
   AllProducts,
-  MyProducts
+  MyProducts,
+  ProductsRequest
 };
