@@ -18,10 +18,14 @@ const bidSchema = new mongoose.Schema(
     },
     status: { 
         type:String,
-        enum:["pending", "approve", "declined"],
+        enum:["pending", "payment","success", "failed"],
         default:"pending", 
     },
-    isDeleted: { 
+    isWinner:{
+      type:Boolean,
+      default:false
+    },
+    isDeleted: {
         type:Boolean,
         default:false, 
     },

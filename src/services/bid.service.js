@@ -12,7 +12,17 @@ const allBid = async(product, status)=>{
     }
     if(status) filter.status= status
 
-    await Bid.find().sort({createdAt:-1}).populate('author', "name address").populate({
+    return await Bid.find({isDeleted: false}).sort({createdAt:-1}).select("-isDeleted -createdAt -updatedAt").populate('author', "name address").populate({
+        path:'product',
+        select:"-createdAt -updatedAt -isDeleted",
+        populate:{path:"author",
+            select:"name address",
+        }
+    })
+}
+
+const selfBid = async(user)=>{
+    return await Bid.find({author: new ObjectId(user)}).sort({createdAt:-1}).select("-isDeleted -createdAt -updatedAt").populate('author', "name address").populate({
         path:'product',
         select:"-createdAt -updatedAt -isDeleted",
         populate:{path:"author",
@@ -39,8 +49,7 @@ const deleteBidById = async(id)=>{
 module.exports = {
     bidPost,
     allBid,
+    selfBid,
     getBidById,
     deleteBidById
-
-
 }

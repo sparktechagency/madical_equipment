@@ -14,6 +14,8 @@ const { authLimiter } = require("./middlewares/rateLimiter");
 const routes = require("./routes/v1");
 const { errorConverter, errorHandler } = require("./middlewares/error");
 const ApiError = require("./utils/ApiError");
+const cron = require('node-cron');
+const { selectWinner } = require("./services/product.service");
 
 const app = express();
 
@@ -48,6 +50,18 @@ app.options("*", cors());
 // jwt authentication
 app.use(passport.initialize());
 passport.use("jwt", jwtStrategy);
+
+// cron jobs 
+cron.schedule('0 0 * * *', () => {
+  try{
+    selectWinner()
+
+  }catch(e){
+    console.log(e);
+  }
+  console.log('running a task every 2 minutes');
+});
+
 
 // limit repeated failed requests to auth endpoints
 if (config.env === "production") {

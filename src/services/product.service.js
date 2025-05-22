@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Product } = require('../models');
+const { Product, Bid } = require('../models');
 const ApiError = require('../utils/ApiError');
 const { findCategoryByID } = require('./category.service');
 const {ObjectId} = require('mongoose').Types
@@ -52,8 +52,27 @@ const softDeleteProduct = async (id) => {
   return await Product.findByIdAndUpdate(id, { isDeleted: true });
 };
 
+const selectWinner = async()=>{
+  const products = await Product.find({
+    status: "approve",
+    isDeleted: false,
+    date: { $lte: new Date() },
+  });
+  if (products.length > 0) {
+    for (const product of products) {
+      const bid = await Bid.findOne({ product: product._id, isDeleted: false }).sort({ bidAmount: -1 });
+      if (bid) {
+        bid.isWinner = true;
+        bid.status = "payment";
+        await bid.save();
 
-
+        product.status = "sold";
+        await product.save();
+      }
+    }
+  }
+}
+ 
 
 module.exports = {
   createProduct,
@@ -63,6 +82,7 @@ module.exports = {
   myProducts,
   updateProduct,
   softDeleteProduct,
+  selectWinner
 };
 
 
