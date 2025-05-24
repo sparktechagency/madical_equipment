@@ -72,7 +72,6 @@ const selectWinner = async()=>{
     }
   }
 }
- 
 
 module.exports = {
   createProduct,

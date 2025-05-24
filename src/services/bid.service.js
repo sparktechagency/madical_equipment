@@ -34,7 +34,7 @@ const selfBid = async(user)=>{
 const getBidById = async(id)=>{
     return await Bid.findById(id).populate('author', "name address").populate({
         path:'product',
-        select:"-createdAt -updatedAt -isDeleted",
+        select:"-createdAt -updatedAt",
         populate:{path:"author",
             select:"name address",
         }
