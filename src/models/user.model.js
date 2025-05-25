@@ -61,7 +61,12 @@ const userSchema = mongoose.Schema(
       required: false,
       default: null
     },
-    availableBalance:{
+    currentBalance:{
+      type:Number,
+      required:false,
+      default:0
+    },
+    totalIncome:{
       type:Number,
       required:false,
       default:0

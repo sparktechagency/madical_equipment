@@ -21,8 +21,11 @@ const allBid = async(product, status)=>{
     })
 }
 
-const selfBid = async(user)=>{
-    return await Bid.find({author: new ObjectId(user)}).sort({createdAt:-1}).select("-isDeleted -createdAt -updatedAt").populate('author', "name address").populate({
+const selfBid = async(user, status)=>{
+    const filter ={author: new ObjectId(user)}
+    if(status) filter.status = status
+    
+    return await Bid.find(filter).sort({createdAt:-1}).select("-isDeleted -createdAt -updatedAt").populate('author', "name address").populate({
         path:'product',
         select:"-createdAt -updatedAt -isDeleted",
         populate:{path:"author",

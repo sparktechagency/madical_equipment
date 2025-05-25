@@ -63,7 +63,7 @@ const selectWinner = async()=>{
       const bid = await Bid.findOne({ product: product._id, isDeleted: false }).sort({ bidAmount: -1 });
       if (bid) {
         bid.isWinner = true;
-        bid.status = "payment";
+        bid.paymentStatus="unpaid"
         await bid.save();
 
         // product.status = "sold";

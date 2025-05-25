@@ -1,4 +1,4 @@
-const { Transaction, Bid, Product } = require("../models")
+const { Transaction, Bid, Product, User } = require("../models")
 
 const createPayment = async (payload)=>{
     const payment = new Transaction(payload)
@@ -24,7 +24,7 @@ const getAllPayments = async ()=>{
 const handlePaymentSuccess = async (session) => {
     console.log(session);
     try {
-      const {payment_intent, metadata} =  session
+      const {payment_intent, metadata, amount_total} =  session
       // Destructure metadata from session
       const {
         author,
@@ -32,10 +32,15 @@ const handlePaymentSuccess = async (session) => {
         transaction
       } = metadata || {}; 
   
-        // await Transaction.create({author:author, amount: amount_total/100,subscriptionPurchaseId:subscriptionPurchaseId, transactionId:payment_intent, status:"success"})
-
-        const bidRes = await Bid.findByIdAndUpdate(bid, {status:"progress"})
+      //update bid status to "progress"
+        const bidRes = await Bid.findByIdAndUpdate(bid, {status:"progress", paymentStatus:"paid"}, {new:true})
+        // product status to sold
         await Product.findByIdAndUpdate(bidRes.product, {status:"sold"})
+        // update seller's balance and total income
+        const seller = await User.findByIdAndUpdate(author)
+        seller.currentBalance = seller.currentBalance + ((amount_total/100)*0.9)
+        seller.totalIncome = seller.totalIncome + ((amount_total/100)*0.9)
+        await seller.save()
       // Update SubscriptionPurchase status to "success"
       const updatedSubscription = await Transaction.findByIdAndUpdate(
         transaction,

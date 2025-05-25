@@ -48,8 +48,8 @@ const AllBid = catchAsync(async (req, res) => {
 
 const SelfBid = catchAsync(async (req, res) => {
   const {id}= req.user    
-  const result = await bidService.
-    selfBid(id)
+  const {status}= req.query
+  const result = await bidService.selfBid(id, status)
     res.status(httpStatus.OK).json(
       response({
         message: 'self retrieved success',

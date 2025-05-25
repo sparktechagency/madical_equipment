@@ -57,7 +57,6 @@ const CreatePayment = catchAsync(async (req, res) => {
   );
   });
 
-
   //LastSubscriptionPurchasedUser
 const handleStripeWebhook = catchAsync(async (req, res) => {
 
@@ -65,7 +64,7 @@ const sig = req.headers['stripe-signature'];
 let event;
 try {
   // Verify webhook signature
-  
+
   event = stripe.webhooks.constructEvent(req.rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
 } catch (err) {
   console.error('Webhook signature verification failed:', err.message);

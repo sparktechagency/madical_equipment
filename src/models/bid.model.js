@@ -16,9 +16,14 @@ const bidSchema = new mongoose.Schema(
         type: Number, 
         required: [true, "amount is required "]
     },
+    paymentStatus:{
+      type:String,
+      enum:["paid", "unpaid"],
+      required:false
+    },
     status: { 
         type:String,
-        enum:["pending", "payment", "progress","success", "failed"],
+        enum:["pending",  "progress","delivery","completed", "cancelled"],
         default:"pending", 
     },
     isWinner:{
