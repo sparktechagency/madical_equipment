@@ -66,8 +66,8 @@ const selectWinner = async()=>{
         bid.status = "payment";
         await bid.save();
 
-        product.status = "sold";
-        await product.save();
+        // product.status = "sold";
+        // await product.save();
       }
     }
   }

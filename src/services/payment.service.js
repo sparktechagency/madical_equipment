@@ -1,4 +1,4 @@
-const { Transaction } = require("../models")
+const { Transaction, Bid, Product } = require("../models")
 
 const createPayment = async (payload)=>{
     const payment = new Transaction(payload)
@@ -20,8 +20,50 @@ const getAllPayments = async ()=>{
 
 
 
+//handlePaymentSuccess
+const handlePaymentSuccess = async (session) => {
+    console.log(session);
+    try {
+      const {payment_intent, metadata} =  session
+      // Destructure metadata from session
+      const {
+        author,
+        bid,
+        transaction
+      } = metadata || {}; 
+  
+        // await Transaction.create({author:author, amount: amount_total/100,subscriptionPurchaseId:subscriptionPurchaseId, transactionId:payment_intent, status:"success"})
+
+        const bidRes = await Bid.findByIdAndUpdate(bid, {status:"progress"})
+        await Product.findByIdAndUpdate(bidRes.product, {status:"sold"})
+      // Update SubscriptionPurchase status to "success"
+      const updatedSubscription = await Transaction.findByIdAndUpdate(
+        transaction,
+        { status: "success", transactionId:payment_intent },
+        { new: true } // Optional: If you want to return the updated document
+      );
+  
+      if (!updatedSubscription) {
+        throw new Error("Subscription Purchase not found or failed to update");
+      }
+  
+    } catch (error) {
+      console.error("Error handling payment success:", error.message);
+      // You might want to log this or send a failure response depending on your app's requirements
+    }
+  };
+  
+  // Handle payment failure
+  const handlePaymentFailure = async (invoice) => {
+    console.log("payment failed ", invoice);
+    
+  };
+  
+
 module.exports = {
     createPayment,
     updatePaymentStatus,
-    getAllPayments
+    getAllPayments,
+    handlePaymentSuccess,
+    handlePaymentFailure
 }

@@ -13,7 +13,7 @@ const AddBid = catchAsync(async (req, res) => {
         console.log(isExistProduct);
         if(!isExistProduct || isExistProduct?.status!=="approve") throw new ApiError(httpStatus.BAD_REQUEST, "product not found !")
         if(isExistProduct?.isDeleted) throw new ApiError(httpStatus.BAD_REQUEST, " product is deleted !")
-        if(new Date(isExistProduct?.date) < new Date()) throw new ApiError(httpStatus.BAD_REQUEST, " bid time expires !")
+        if(new Date(isExistProduct?.date) < new Date()) throw new ApiError(httpStatus.BAD_REQUEST, "product biding time expires !")
 //create bid
     const bid = await bidService.bidPost({product, bidAmount:amount, author:req.user.id})
   

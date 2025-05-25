@@ -4,6 +4,7 @@ const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
 const compression = require("compression");
 const cors = require("cors");
+const bodyParser = require("body-parser")
 const passport = require("passport");
 const httpStatus = require("http-status");
 const status = require("express-status-monitor");
@@ -29,6 +30,15 @@ app.use(express.static("public"));
 
 // set security HTTP headers
 app.use(helmet());
+
+
+app.use(
+  bodyParser.json({
+    verify: function (req, res, buf) {
+      req.rawBody = buf;
+    },
+  })
+);
 
 // parse json request body
 app.use(express.json());

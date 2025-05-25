@@ -22,9 +22,10 @@ const transactionSchema = new mongoose.Schema(
         default: "pending" 
 
     },
-    transaction:{
+    transactionId:{
       type:String,
-      required:false
+      required:false,
+      default:null
     },
     isDeleted: {
         type:Boolean,
