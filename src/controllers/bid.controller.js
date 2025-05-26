@@ -27,24 +27,38 @@ const AddBid = catchAsync(async (req, res) => {
     );
   });
 
-//add bid
-const AllBid = catchAsync(async (req, res) => {
+//all bid
+const ProductBid = catchAsync(async (req, res) => {
+  const {status} = req.query
   const {id} = req.params
   const {role, id:user} = req.user
   const product = await productService.getProductById(id)
   if(!product || (product.author.toString()!==user && role!=="admin")) throw  new ApiError(httpStatus.BAD_REQUEST, "product not found")
-  const {status} = req.query
     const result = await bidService.
-    allBid(id, status)
+  productBid(id, status)
     res.status(httpStatus.OK).json(
       response({
-        message: 'all bid retrieved success',
+        message: 'products bid retrieved success',
         status: 'OK',
         statusCode: httpStatus.OK,
         data: result,
       })
     );
   });
+  
+const AllBid = catchAsync(async (req, res) => {
+  const {status} = req.query
+  const {role, id:user} = req.user
+    const result = await bidService.getAllBid(user, role, status)
+    res.status(httpStatus.OK).json(
+      response({
+        message: 'all bid retrieved success.',
+        status: 'OK',
+        statusCode: httpStatus.OK,
+        data: result,
+      })
+    );
+});
 
 const SelfBid = catchAsync(async (req, res) => {
   const {id}= req.user    
@@ -93,11 +107,59 @@ const DeleteBid = catchAsync(async (req, res) => {
     );
   });
 
+const ProductDelivery = catchAsync(async(req, res)=>{
+  const {id} = req.params
+  const {id:owner} = req.user 
+  //bid validation
+  const bid = await bidService.getBidById(id)
+  if(!bid || bid.isDeleted || !bid.isWinner) throw new ApiError(httpStatus.NOT_FOUND, "bid not found !")
+    if(bid.product.author._id.toString()!==owner) throw new ApiError(httpStatus.BAD_REQUEST, "you are not product owner !")
+    if(bid.status!=="progress") throw new ApiError(httpStatus.BAD_REQUEST, "bid.status is not progress")
+  //bid status update
+  const result = await bidService.sendDelivery(id)
+  //response
+  res.status(httpStatus.OK).json(
+    response({
+      message: "product going delivery.",
+      status:'OK',
+      statusCode:httpStatus.OK,
+      data: result
+    })
+  )
+
+})
+
+const ProductDeliveryCompleted = catchAsync(async(req, res)=>{
+  const {id} = req.params
+  const {id:owner} = req.user 
+  //bid validation
+  const bid = await bidService.getBidById(id)
+  if(!bid || bid.isDeleted || !bid.isWinner) throw new ApiError(httpStatus.NOT_FOUND, "bid not found !")
+
+    if(bid.product.author._id.toString()!==owner) throw new ApiError(httpStatus.BAD_REQUEST, "you are not product owner !")
+    if(bid.status!=="shipped") throw new ApiError(httpStatus.BAD_REQUEST, "bid.status is not shipped !")
+  //bid status update
+  const result = await bidService.sendDeliveryComplete(id)
+  //response
+  res.status(httpStatus.OK).json(
+    response({
+      message: "product delivery completed.",
+      status:'OK',
+      statusCode:httpStatus.OK,
+      data: result
+    })
+  )
+
+})
+
 
 module.exports = {
     AddBid,
-    AllBid,
+    ProductBid,
     SelfBid,
     SingleBid,
-    DeleteBid
+    DeleteBid,
+    AllBid,
+    ProductDelivery,
+    ProductDeliveryCompleted
 }

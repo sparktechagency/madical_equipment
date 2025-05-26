@@ -23,7 +23,7 @@ const bidSchema = new mongoose.Schema(
     },
     status: { 
         type:String,
-        enum:["pending",  "progress","delivery","completed", "cancelled"],
+        enum:["pending",  "progress", "shipped", "delivery", "cancelled"],
         default:"pending", 
     },
     isWinner:{

@@ -18,8 +18,6 @@ const getAllPayments = async ()=>{
     return await Transaction.find().populate('author', "name address").populate('product').sort({createdAt:-1}).select("-isDeleted -__v")
 }
 
-
-
 //handlePaymentSuccess
 const handlePaymentSuccess = async (session) => {
     console.log(session);
@@ -33,7 +31,10 @@ const handlePaymentSuccess = async (session) => {
       } = metadata || {}; 
   
       //update bid status to "progress"
-        const bidRes = await Bid.findByIdAndUpdate(bid, {status:"progress", paymentStatus:"paid"}, {new:true})
+        const bidRes = await Bid.findByIdAndUpdate(bid, 
+          {status:"progress", 
+            paymentStatus:"paid"}, 
+            {new:true})
         // product status to sold
         await Product.findByIdAndUpdate(bidRes.product, {status:"sold"})
         // update seller's balance and total income
