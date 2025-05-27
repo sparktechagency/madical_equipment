@@ -41,7 +41,7 @@ const myProducts = async (author, payload, isDeleted=false) => {
     if (payload?.category) filter.category = new ObjectId(payload?.category)
     if (payload.status) filter.status = payload?.status
     // query data 
-    return await Product.find(filter).populate('author', "name address").populate('category').sort({createdAt:-1}).select('-createdAt -updatedAt -isDeleted');
+    return await Product.find(filter).populate('author', "name address").populate('category', '-createdAt -updatedAt -isDeleted').sort({createdAt:-1}).select('-createdAt -updatedAt -isDeleted');
 };
 
 const updateProduct = async (id, updateData) => {

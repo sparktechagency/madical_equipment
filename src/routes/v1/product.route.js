@@ -57,6 +57,12 @@ router.get(
 );
 
 router.get(
+  '/seller/:id',
+  auth('common'),
+  productController.MyProducts
+);
+
+router.get(
   '/single/:id',
   auth('common'),
   productController.SingleProduct

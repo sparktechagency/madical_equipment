@@ -134,9 +134,31 @@ const handlePaymentFailure = async (invoice) => {
 
  //single transaction 
  const getSingleTransaction = async (transactionId) =>{
-  return await Transaction.findById(transactionId).select('-isDeleted -updatedAt').populate('author', 'name address email phone').populate("product", "title description images price")
- }
+  return await Transaction.findById(transactionId)
+  .select('-isDeleted -updatedAt')
+  .populate('author', 'name address email phone')
+  .populate({
+    path:"product",
+    select:"author title description images price",
+    populate:{
+      path:"author",
+      select:"name address email phone"
+    }
+  }) }
 
+ const allProductPayments = async()=>{
+  return await Transaction.find({status:"success"})
+  .select("-updatedAt -isDeleted")
+  .populate('author', "name address email phone")
+  .populate({
+    path:"product",
+    select:"author title description images price",
+    populate:{
+      path:"author",
+      select:"name address email phone"
+    }
+  })
+ }
 
 //  const updateAllTransactions = async()=>{
 //   await Transaction.deleteMany({status:{$ne:"success"}})
@@ -151,5 +173,6 @@ module.exports = {
     handlePaymentSuccess,
     handlePaymentFailure,
     getSellerEarnings,
-    getSingleTransaction
+    getSingleTransaction,
+    allProductPayments
 }

@@ -2,7 +2,7 @@ const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const response = require("../config/response");
 const catchAsync = require("../utils/catchAsync");
-const { createPayment, handlePaymentSuccess, handlePaymentFailure, getSellerEarnings, getSingleTransaction } = require("../services/payment.service");
+const { createPayment, handlePaymentSuccess, handlePaymentFailure, getSellerEarnings, getSingleTransaction, allProductPayments } = require("../services/payment.service");
 const { getBidById } = require("../services/bid.service");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
@@ -104,6 +104,19 @@ try {
     })
   );
   });
+  //get seller earnings
+  const GetAllProductPayments = catchAsync(async (req, res) => {
+  const result = await allProductPayments()
+// payment response  
+  res.status(httpStatus.OK).json(
+    response({
+      message: "transactions retrieved successfully.",
+      status: "OK",
+      statusCode: httpStatus.OK,
+      data: result,
+    })
+  );
+  });
 
   // getSingleTransaction
   const GetSingleTransaction = catchAsync(async (req, res) => {
@@ -126,5 +139,6 @@ module.exports = {
     CreatePayment,
     handleStripeWebhook,
     GetSellerEarnings,
-    GetSingleTransaction
+    GetSingleTransaction,
+    GetAllProductPayments
 }

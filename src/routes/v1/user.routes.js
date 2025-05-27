@@ -23,6 +23,8 @@ router
     userController.updateProfile
   );
 
+  router.get('/all', auth('admin'), userController.getUsers)
+
   
 
 module.exports = router;

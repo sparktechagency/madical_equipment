@@ -171,6 +171,23 @@ const {category, status} = req.query
   );
 });
 
+// All product 
+const SellerProducts = catchAsync(async (req, res) => {
+const {id:author} = req.params
+const {category, status} = req.query
+
+  const products = await productService.myProducts(author, {category, status});
+
+  res.status(httpStatus.OK).json(
+    response({
+      message: 'Products retrieved success',
+      status: 'OK',
+      statusCode: httpStatus.OK,
+      data: products,
+    })
+  );
+});
+
 // requested product list
 const ProductsRequest = catchAsync(async (req, res) => {
 
@@ -196,5 +213,6 @@ module.exports = {
   SingleProduct,
   AllProducts,
   MyProducts,
-  ProductsRequest
+  ProductsRequest,
+  SellerProducts
 };

@@ -18,8 +18,6 @@ const createUser = async (userBody) => {
    return oneTimeCode
 };
 
-
-
 const queryUsers = async (filter, options) => {
   const query = {};
 
@@ -41,8 +39,6 @@ const queryUsers = async (filter, options) => {
 
   return users;
 };
-
-
 
 const getUserById = async (id) => {
   return User.findById(id);
