@@ -1,4 +1,5 @@
 const { Transaction, Bid, Product, User } = require("../models")
+const {ObjectId} = require("mongoose").Types
 
 const createPayment = async (payload)=>{
     const payment = new Transaction(payload)
@@ -14,6 +15,7 @@ const updatePaymentStatus = async (id, status, transactionId)=>{
 
 }
 
+//get all payments
 const getAllPayments = async ()=>{
     return await Transaction.find().populate('author', "name address").populate('product').sort({createdAt:-1}).select("-isDeleted -__v")
 }
@@ -60,16 +62,95 @@ const handlePaymentSuccess = async (session) => {
   };
   
   // Handle payment failure
-  const handlePaymentFailure = async (invoice) => {
+const handlePaymentFailure = async (invoice) => {
     console.log("payment failed ", invoice);
     
   };
-  
+
+  // client earnings
+ const getSellerEarnings = async (sellerId)=>{
+  const pipeline = [
+    {
+      $match:{
+        author: new ObjectId(sellerId),
+        status:"sold"
+      }
+    },
+    {
+      $lookup:{
+        from:"transactions",
+        localField:"_id",
+        foreignField:"product",
+        as: "transactions"
+      }
+    },
+    {
+      $unwind:"$transactions"
+    },
+    {
+      $match:{
+        "transactions.status":"success"
+      }
+    },
+    {
+      $lookup: {
+        from:'users',
+        localField:"transactions.author",
+        foreignField:"_id",
+        as:"transactions.author"
+      }
+    },
+    {$unwind:"$transactions.author"},
+    {
+      //response model
+      $project:{
+          product:{
+            "title":"$title",
+            "description":"$description",
+            "images":"$images",
+          },
+          // transactions:{
+            _id:"$transactions._id",
+            amount: "$transactions.amount",
+            transactionId: "$transactions.transactionId",
+            status: "$transactions.status",
+            createdAt: "$transactions.createdAt",
+          // },
+          author:{
+            _id:"$transactions.author._id",
+            name: "$transactions.author.name",
+            email: "$transactions.author.email",
+            phone: "$transactions.author.phone",
+            address: "$transactions.author.address"
+          }
+      }
+    }
+  ]
+  console.log(sellerId);
+
+  const earnings = await Product.aggregate(pipeline)
+  return earnings
+
+ }
+
+ //single transaction 
+ const getSingleTransaction = async (transactionId) =>{
+  return await Transaction.findById(transactionId).select('-isDeleted -updatedAt').populate('author', 'name address email phone').populate("product", "title description images price")
+ }
+
+
+//  const updateAllTransactions = async()=>{
+//   await Transaction.deleteMany({status:{$ne:"success"}})
+//  }
+
+//  updateAllTransactions()
 
 module.exports = {
     createPayment,
     updatePaymentStatus,
     getAllPayments,
     handlePaymentSuccess,
-    handlePaymentFailure
+    handlePaymentFailure,
+    getSellerEarnings,
+    getSingleTransaction
 }
