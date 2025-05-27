@@ -75,7 +75,7 @@ const handlePaymentFailure = async (invoice) => {
         author: new ObjectId(sellerId),
         status:"sold"
       }
-    },
+    },  
     {
       $lookup:{
         from:"transactions",
@@ -126,7 +126,6 @@ const handlePaymentFailure = async (invoice) => {
       }
     }
   ]
-  console.log(sellerId);
 
   const earnings = await Product.aggregate(pipeline)
   return earnings

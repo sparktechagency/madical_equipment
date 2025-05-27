@@ -1,5 +1,5 @@
 const httpStatus = require("http-status")
-const { Bid } = require("../models")
+const { Bid, Product } = require("../models")
 const ApiError = require("../utils/ApiError")
 const {ObjectId} = require("mongoose").Types
 
@@ -55,7 +55,6 @@ const deleteBidById = async(id)=>{
 const getAllBid = async (productHoner, role, status) =>{
     const filter = {isDeleted:false, isWinner:true}
     if(status)filter.status = status
-    // if(!status)filter.status = {$nin:["pending", "cancelled"]}
 
     //pipeline for aggregation
     const pipeline = [
@@ -126,6 +125,71 @@ const sendDeliveryComplete = async (bid)=>{
     return await Bid.findByIdAndUpdate(bid,{status:"delivery"},  {new:true})
 }
 
+const getAllOrder = async(productOwner, status)=>{
+
+    let statusItems = ["progress",'shipped']
+    if(status) statusItems = [status]
+
+    const pipeline = [
+        {
+            $match:{
+                author : new ObjectId(productOwner),
+                status:'sold'
+            }
+        },
+        {
+            $lookup:{
+                from : "bids",
+                localField:"_id",
+                foreignField : 'product',
+                as : "bids"
+            }
+        },
+        {
+            $unwind:"$bids"
+        },
+    ]
+
+    // filter by bid status 
+    pipeline.push({
+        $match:{"bids.status":{$in:statusItems}}
+    })
+
+    //lookup user 
+    pipeline.push({
+        $lookup:{
+            from:"users",
+            localField:"bids.author",
+            foreignField:"_id",
+            as:'bids.author'
+        }
+    })
+    // unwind user 
+    pipeline.push({
+        $unwind:"$bids.author",   
+    })
+    //project
+    pipeline.push({
+        $project:{
+                _id:"$bids.author._id",
+                name:"$bids.author.name",
+                email:"$bids.author.email",
+                phone:"$bids.author.phone",
+                address:"$bids.author.address",
+                bidAmount:"$bids.bidAmount",
+                status:"$bids.status",
+                createdAt:"$bids.createdAt",
+                product:{
+                    _id:"$_id",
+                    title:"$title",
+                    description:"$description",
+                    price:"$price",
+                }
+        }
+    })
+
+    return await Product.aggregate(pipeline)
+}
 module.exports = {
     bidPost,
     productBid,
@@ -134,5 +198,6 @@ module.exports = {
     deleteBidById,
     getAllBid,
     sendDelivery,
-    sendDeliveryComplete
+    sendDeliveryComplete,
+    getAllOrder
 }

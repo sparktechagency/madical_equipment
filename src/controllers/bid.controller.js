@@ -3,6 +3,7 @@ const ApiError = require("../utils/ApiError");
 const { productService, bidService } = require("../services");
 const response = require("../config/response");
 const catchAsync = require("../utils/catchAsync");
+const { getAllOrder } = require("../services/bid.service");
 
 const AddBid = catchAsync(async (req, res) => {
     const {product, amount} = req.body
@@ -107,6 +108,23 @@ const DeleteBid = catchAsync(async (req, res) => {
     );
   });
 
+
+const GetAllOrder = catchAsync(async (req, res) => {
+    const {id} = req.user
+    const {status} = req.query
+    const result = await getAllOrder(id, status)
+    res.status(httpStatus.OK).json(
+      response({
+        message: 'all order retrieved success.',
+        status: 'OK',
+        statusCode: httpStatus.OK,
+        data: result,
+      })
+    );
+  });
+
+
+
 const ProductDelivery = catchAsync(async(req, res)=>{
   const {id} = req.params
   const {id:owner} = req.user 
@@ -161,5 +179,6 @@ module.exports = {
     DeleteBid,
     AllBid,
     ProductDelivery,
-    ProductDeliveryCompleted
+    ProductDeliveryCompleted,
+    GetAllOrder
 }
