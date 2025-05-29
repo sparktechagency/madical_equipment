@@ -11,3 +11,4 @@ module.exports.AboutUs = require('./aboutUs.model');
 module.exports.PrivacyPolicy = require('./privacyPolicy.model');
 module.exports.Support = require('./support.model');
 module.exports.Report = require('./report.model');
+module.exports.ContactMessage= require('./contactMessage.model');

@@ -8,6 +8,7 @@ const productRoute = require("./product.route");
 const bidRoute = require("./bid.route");
 const paymentRoute = require("./payment.route");
 const reportRoute = require("./report.route");
+const contactMessage = require("./contactMessage.route");
 
 
 const router = express.Router();
@@ -42,6 +43,10 @@ const defaultRoutes = [
   {
     path: "/report",
     route: reportRoute,
+  },
+  {
+    path: "/contact",
+    route: contactMessage,
   },
  
 ];

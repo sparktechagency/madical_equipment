@@ -5,3 +5,4 @@ module.exports.categoryController = require('./category.controller');
 module.exports.bidController = require('./bid.controller');
 module.exports.PaymentController = require('./payment.controller');
 module.exports.ReportController = require('./report.controller');
+module.exports.ContactMessage = require('./contactMessage.controller');

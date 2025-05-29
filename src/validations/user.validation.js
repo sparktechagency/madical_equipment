@@ -55,6 +55,18 @@ const getHome = {
 
 };
 
+const createContactMessageValidation = {
+  body: Joi.object().keys({
+    name: Joi.string().required().trim(),
+    email: Joi.string().required().email().lowercase(),
+    phone: Joi.string().required(),
+    message: Joi.string().required().messages({
+      "any.required": "message is must be Required",
+    }),
+  }),
+};
+
+
 module.exports = {
   getHome,
   createUser,
@@ -62,4 +74,5 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
+  createContactMessageValidation
 };

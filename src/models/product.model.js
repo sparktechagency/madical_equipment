@@ -36,7 +36,6 @@ const productSchema = new mongoose.Schema(
         message: 'Exactly 4 images are required.',
       },
     },
-    
     date: {
       type: Date,
       required:true
