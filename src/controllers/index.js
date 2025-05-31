@@ -6,3 +6,4 @@ module.exports.bidController = require('./bid.controller');
 module.exports.PaymentController = require('./payment.controller');
 module.exports.ReportController = require('./report.controller');
 module.exports.ContactMessage = require('./contactMessage.controller');
+module.exports.PayoutMessage = require('./payout.controller')

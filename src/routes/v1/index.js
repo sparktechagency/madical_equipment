@@ -7,6 +7,7 @@ const categoryRoute = require("./category.route");
 const productRoute = require("./product.route");
 const bidRoute = require("./bid.route");
 const paymentRoute = require("./payment.route");
+const payoutRoute = require("./payout.route");
 const reportRoute = require("./report.route");
 const contactMessage = require("./contactMessage.route");
 
@@ -39,6 +40,10 @@ const defaultRoutes = [
   {
     path: "/payment",
     route: paymentRoute,
+  },
+  {
+    path: "/payout",
+    route: payoutRoute,
   },
   {
     path: "/report",

@@ -4,6 +4,7 @@ module.exports.Product = require('./product.model');
 module.exports.Category = require('./category.model');
 module.exports.Bid = require('./bid.model');
 module.exports.Transaction = require('./transaction.model');
+module.exports.Payout = require('./payout.model');
 
 module.exports.Notification = require('./notification.model');
 module.exports.TermsAndCondition = require('./termsConditions.model');
