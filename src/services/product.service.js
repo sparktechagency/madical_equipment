@@ -4,19 +4,23 @@ const ApiError = require('../utils/ApiError');
 const { findCategoryByID } = require('./category.service');
 const {ObjectId} = require('mongoose').Types
 
+//create product
 const createProduct = async (payload) => {
    const category =await findCategoryByID(payload?.category)
    if(!category) throw new ApiError(httpStatus.NOT_FOUND, "provide valid category !")
   return await Product.create(payload);
 };
 
+//product find with id
 const getProductById = async (id) => {
   return await Product.findById(id);
 };
 
+// single product by id 
 const getSingleProductById = async (id) => {
   return await Product.findById(id).populate('author', "name address").populate('category')
 };
+
 // all products
 const allProducts = async ( payload, isDeleted=false) => {
     const filter = {
@@ -44,14 +48,17 @@ const myProducts = async (author, payload, isDeleted=false) => {
     return await Product.find(filter).populate('author', "name address").populate('category', '-createdAt -updatedAt -isDeleted').sort({createdAt:-1}).select('-createdAt -updatedAt -isDeleted');
 };
 
+//update product
 const updateProduct = async (id, updateData) => {
   return await Product.findByIdAndUpdate(id, updateData, { new: true });
 };
 
+//delete product
 const softDeleteProduct = async (id) => {
   return await Product.findByIdAndUpdate(id, { isDeleted: true });
 };
 
+//select product
 const selectWinner = async()=>{
   const products = await Product.find({
     status: "approve",
@@ -73,6 +80,7 @@ const selectWinner = async()=>{
   }
 }
 
+//export all service
 module.exports = {
   createProduct,
   getProductById,

@@ -10,6 +10,7 @@ const paymentRoute = require("./payment.route");
 const payoutRoute = require("./payout.route");
 const reportRoute = require("./report.route");
 const contactMessage = require("./contactMessage.route");
+const dashboardRoute = require("./dashboard.route");
 
 
 const router = express.Router();
@@ -52,6 +53,10 @@ const defaultRoutes = [
   {
     path: "/contact",
     route: contactMessage,
+  },
+  {
+    path: "/dashboard",
+    route: dashboardRoute,
   },
  
 ];

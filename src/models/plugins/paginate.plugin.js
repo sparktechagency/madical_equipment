@@ -17,7 +17,7 @@ const paginate = (schema) => {
     const skip = (page - 1) * limit;
 
     const countPromise = this.countDocuments(filter).exec();
-    let docsPromise = this.find(filter).sort(sort).skip(skip).limit(limit);
+    let docsPromise = this.find(filter).sort(sort).skip(skip).limit(limit).sort({createdAt:-1});
 
     if (options.populate) {
       options.populate.split(',').forEach((populateOption) => {
