@@ -10,3 +10,4 @@ module.exports.reportService = require('./report.service');
 module.exports.contactMessage = require('./contactMessage.service');
 module.exports.payoutService = require('./payment.service');
 module.exports.dashboardService = require('./dashboard.service');
+module.exports.settingService = require('./setting.service');

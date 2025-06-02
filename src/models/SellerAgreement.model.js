@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const termsSchema = new mongoose.Schema(
+const sellerAgreementSchema = new mongoose.Schema(
   {
     content: { 
       type: String, 
@@ -10,8 +10,8 @@ const termsSchema = new mongoose.Schema(
   },
   { 
     timestamps: true,
-    versionKey: false 
+    versionKey: false
   }
 );
 
-module.exports = mongoose.model("TermsConditions", termsSchema);
+module.exports = mongoose.model("SellerAgreement", sellerAgreementSchema);

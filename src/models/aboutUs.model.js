@@ -6,7 +6,6 @@ const aboutUsSchema = new mongoose.Schema(
       type: String, 
       required: [true, "Content is required"], 
       minlength: 10, 
-      maxlength: 2000
     },
   },
   { 
