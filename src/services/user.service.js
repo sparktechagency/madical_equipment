@@ -10,11 +10,14 @@ const createUser = async (userBody) => {
   }
   const oneTimeCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-  if (userBody.role === "user" || userBody.role === "admin") {
+  // if (userBody.role === "user" || userBody.role === "admin") {
 
     sendEmailVerification(userBody.email, oneTimeCode);
-  }
-   await User.create({ ...userBody, oneTimeCode });
+  // }
+  //  await User.create({ ...userBody, oneTimeCode });
+   await User.create({ ...userBody,    oneTimeCode: {
+    code: oneTimeCode,
+  }, });
    return oneTimeCode
 };
 

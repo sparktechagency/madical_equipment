@@ -15,10 +15,12 @@ const findCategoryByID = async(id) =>{
     if (!category || category.isDeleted) throw new ApiError(httpStatus.BAD_REQUEST, "category not found!")
     return category
 }
-const updateCategory = async(id ,name) =>{
+const updateCategory = async(id ,payload) =>{
     const  category  = await Category.findById(id)
     if (!category || category.isDeleted) throw new ApiError(httpStatus.BAD_REQUEST, "category not found!")
-    category.name = name
+
+    if(payload?.image) category.image = payload?.image 
+    if(payload?.name) category.name = payload?.name
     await category.save()
 }
 
@@ -55,6 +57,10 @@ module.exports = {
         {"name": "Orthopedic Supplies"}
       ]
 const updateAll = async()=>{
-    await Category.create(category)
+    const res = await Category.updateMany({},{$set :{
+        image:`uploads/category/monitor-1747563990527.png`
+    }})
+    console.log(res);
 }
+
 // updateAll()

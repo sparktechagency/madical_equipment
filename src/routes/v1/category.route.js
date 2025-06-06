@@ -1,6 +1,12 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const categoryController = require('../../controllers/category.controller');
+const userFileUploadMiddleware = require("../../middlewares/fileUpload");
+const convertHeicToPngMiddleware = require('../../middlewares/converter');
+
+const UPLOADS_FOLDER_USERS = "./public/uploads/category";
+
+const uploadUsers = userFileUploadMiddleware(UPLOADS_FOLDER_USERS);
 
 const router = express.Router();
 
@@ -8,7 +14,8 @@ router
   .route('/')
   .post(
     auth('admin'), // only admin allowed
-    categoryController.CreateCategory
+    [uploadUsers.single("image")],
+    convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),    categoryController.CreateCategory
   )
   .get(
     auth('common'),
@@ -19,6 +26,8 @@ router
   .route('/:id')
   .patch(
     auth('admin'),
+    [uploadUsers.single("image")],
+    convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
     categoryController.UpdateCategoryName
   )
   .delete(

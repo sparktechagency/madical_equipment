@@ -6,6 +6,10 @@ const categorySchema = new mongoose.Schema(
       type: String, 
       required: [true, "category must required !"],
     },
+    image: {
+      type: String, 
+      required: [true, "image must required !"],
+    },
     isDeleted: {
       type: Boolean, 
       default: false,

@@ -2,12 +2,16 @@ const httpStatus = require('http-status');
 const { categoryService } = require('../services');
 const catchAsync = require('../utils/catchAsync');
 const response = require('../config/response');
+const ApiError = require('../utils/ApiError');
 
 // Create a new category
 const CreateCategory = catchAsync(async (req, res) => {
   const { name } = req.body;
 
-  const result = await categoryService.createCategory({ name });
+  if(!req?.file) throw new ApiError(httpStatus.BAD_REQUEST, "please provide category image!")
+    const image = 'uploads/category/'+req.file.filename
+
+  const result = await categoryService.createCategory({ name, image });
 
   res.status(httpStatus.CREATED).json(
     response({
@@ -38,7 +42,11 @@ const UpdateCategoryName = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
 
-  await categoryService.updateCategory(id, name);
+  const payload = {name}
+
+if(req.file) payload.image = 'uploads/category/'+req.file.filename
+
+  await categoryService.updateCategory(id, payload);
 
   res.status(httpStatus.OK).json(
     response({

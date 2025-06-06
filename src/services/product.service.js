@@ -157,3 +157,17 @@ const medicalProduct = [
     }
   ]
   
+  const images = ['uploads/products/monitor-1747563990527.png', 'uploads/products/oxygen_concentrator-1747563990935.png',
+    'uploads/products/oxygenconcentrator-1747563991324.png',
+    'uploads/products/surgical_scalpel_set-1747563991647.png'
+  ]
+
+  const updateAllProduct = async()=>{
+  const res = await Product.updateMany({}, {$set :{
+      images : images
+    }})
+    console.log(res);
+  }
+  // updateAllProduct()
+
+
