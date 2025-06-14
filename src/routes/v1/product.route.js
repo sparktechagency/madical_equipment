@@ -59,7 +59,7 @@ router.get(
 router.get(
   '/seller/:id',
   auth('common'),
-  productController.MyProducts
+  productController.SellerProducts
 );
 
 router.get(

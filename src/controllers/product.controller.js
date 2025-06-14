@@ -176,7 +176,7 @@ const SellerProducts = catchAsync(async (req, res) => {
 const {id:author} = req.params
 const {category, status} = req.query
 
-  const products = await productService.myProducts(author, {category, status});
+  const products = await productService.sellerProducts(author, {category, status});
 
   res.status(httpStatus.OK).json(
     response({
@@ -190,8 +190,8 @@ const {category, status} = req.query
 
 // requested product list
 const ProductsRequest = catchAsync(async (req, res) => {
-
-  const products = await productService.allProducts({status:"pending"});
+  const {role} = req.user
+  const products = await productService.allProducts({status:"pending"}, false, role);
 
   res.status(httpStatus.OK).json(
     response({

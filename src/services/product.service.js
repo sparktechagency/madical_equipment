@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Product, Bid } = require('../models');
+const { Product, Bid, User } = require('../models');
 const ApiError = require('../utils/ApiError');
 const { findCategoryByID } = require('./category.service');
 const {ObjectId} = require('mongoose').Types
@@ -18,11 +18,11 @@ const getProductById = async (id) => {
 
 // single product by id 
 const getSingleProductById = async (id) => {
-  return await Product.findById(id).populate('author', "name address").populate('category')
+  return await Product.findById(id).populate('author', "name address image").populate('category')
 };
 
 // all products
-const allProducts = async ( payload, isDeleted=false) => {
+const allProducts = async ( payload, isDeleted=false, role) => {
     const filter = {
         isDeleted,
         status :"approve"
@@ -30,9 +30,11 @@ const allProducts = async ( payload, isDeleted=false) => {
     // all 
     if (payload?.category) filter.category = new ObjectId(payload?.category)
     if (payload.status==="pending") filter.status = payload?.status
-    if (payload?.role==='admin' && filter.status) filter.status = filter.status
+    if (role==='admin' && filter.status) filter.status = payload.status
+
     // query data 
     return await Product.find(filter).populate('author', "name address").populate('category').sort({createdAt:-1}).select('-createdAt -updatedAt -isDeleted');
+
 };
 
 // self product 
@@ -46,6 +48,24 @@ const myProducts = async (author, payload, isDeleted=false) => {
     if (payload.status) filter.status = payload?.status
     // query data 
     return await Product.find(filter).populate('author', "name address").populate('category', '-createdAt -updatedAt -isDeleted').sort({createdAt:-1}).select('-createdAt -updatedAt -isDeleted');
+};
+
+// self product 
+const sellerProducts = async (author, payload, isDeleted=false) => {
+  const seller = await User.findById(author).select('name email image phone role address currentBalance totalIncome')
+  const filter = {
+        isDeleted,
+        author: new ObjectId(author)
+    }
+    // all 
+    if (payload?.category) filter.category = new ObjectId(payload?.category)
+    if (payload.status) filter.status = payload?.status
+    // query data 
+    const products = await Product.find(filter).populate('category', '-createdAt -updatedAt -isDeleted ').sort({createdAt:-1}).select('-createdAt -updatedAt -isDeleted -author');
+    return {
+      author : seller,
+      products
+    }
 };
 
 //update product
@@ -87,6 +107,7 @@ module.exports = {
   getSingleProductById,
   allProducts,
   myProducts,
+  sellerProducts,
   updateProduct,
   softDeleteProduct,
   selectWinner

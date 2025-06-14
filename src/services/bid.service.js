@@ -1,5 +1,5 @@
 const httpStatus = require("http-status")
-const { Bid, Product } = require("../models")
+const { Bid, Product, User } = require("../models")
 const ApiError = require("../utils/ApiError")
 const {ObjectId} = require("mongoose").Types
 
@@ -25,16 +25,19 @@ const productBid = async(product, status)=>{
 }
 
 const selfBid = async(user, status)=>{
+    const author = await User.findById(user).select('name email phone address image ')
     const filter ={author: new ObjectId(user)}
     if(status) filter.status = status
     
-    return await Bid.find(filter).sort({createdAt:-1}).select("-isDeleted -createdAt -updatedAt").populate('author', "name address").populate({
+    const products = await Bid.find(filter).sort({createdAt:-1}).select("-isDeleted -createdAt -updatedAt").populate({
         path:'product',
         select:"-createdAt -updatedAt -isDeleted",
         populate:{path:"author",
-            select:"name address",
+            select:"name email phone address image ",
         }
     })
+
+    return { author, products}
 }
 
 const getBidById = async(id)=>{

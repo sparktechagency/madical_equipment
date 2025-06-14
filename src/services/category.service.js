@@ -7,7 +7,10 @@ const createCategory = async(payload) =>{
 }
 
 const allCategory = async() =>{
-    return await Category.find({isDeleted:false}).select('name')
+    return await Category.find({isDeleted:false}).select('name image')
+}
+const singleCategory = async(id) =>{
+    return await Category.findById(id).select('name image')
 }
 
 const findCategoryByID = async(id) =>{
@@ -39,7 +42,8 @@ module.exports = {
     allCategory,
     findCategoryByID,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    singleCategory
 }
 
 
@@ -56,11 +60,11 @@ module.exports = {
         {"name": "Respiratory Equipment"},
         {"name": "Orthopedic Supplies"}
       ]
-const updateAll = async()=>{
-    const res = await Category.updateMany({},{$set :{
-        image:`uploads/category/monitor-1747563990527.png`
-    }})
-    console.log(res);
-}
+// const updateAll = async()=>{
+//     const res = await Category.updateMany({},{$set :{
+//         image:`uploads/category/monitor-1747563990527.png`
+//     }})
+//     console.log(res);
+// }
 
 // updateAll()

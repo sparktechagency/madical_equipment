@@ -22,6 +22,9 @@ router
     categoryController.GetAllCategories
   );
 
+  router.get('/single/:id', auth('common'), categoryController.GetSingleCategories)
+
+
 router
   .route('/:id')
   .patch(

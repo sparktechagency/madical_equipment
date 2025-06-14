@@ -36,6 +36,20 @@ const GetAllCategories = catchAsync(async (req, res) => {
     })
   );
 });
+// Get all categories (not deleted)
+const GetSingleCategories = catchAsync(async (req, res) => {
+  const {id} = req.params
+  const categories = await categoryService.singleCategory(id);
+
+  res.status(httpStatus.OK).json(
+    response({
+      message: 'Category retrieved successfully',
+      status: 'OK',
+      statusCode: httpStatus.OK,
+      data: categories,
+    })
+  );
+});
 
 // Update category name by ID
 const UpdateCategoryName = catchAsync(async (req, res) => {
@@ -79,4 +93,5 @@ module.exports = {
   GetAllCategories,
   UpdateCategoryName,
   DeleteCategory,
+  GetSingleCategories
 };
