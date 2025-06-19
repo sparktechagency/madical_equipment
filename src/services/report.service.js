@@ -10,10 +10,13 @@ const getReportById = async(id)=>{
     .populate({
         path:"bid",
         select:"title description price images",
-        populate:{
+        populate:[{
             path:'author',
             select:"name email phone image address"
-        }
+        },{
+            path:'product',
+            select:"title images price description"
+        }],
     })
 }
 
