@@ -21,7 +21,7 @@ const createPayoutRequest = async ({ author, amount }) => {
 };
 
 const getAllPayoutRequests = async () => {
-  return Payout.find().populate("author", "name email currentBalance stripe");
+  return Payout.find().populate("author", "name email currentBalance stripe phone").sort({createdAt:-1});
 };
 
 const getPayoutRequestById = async (id) => {

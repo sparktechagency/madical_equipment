@@ -149,13 +149,13 @@ const handlePaymentFailure = async (invoice) => {
  const allProductPayments = async()=>{
   return await Transaction.find({status:"success"})
   .select("-updatedAt -isDeleted")
-  .populate('author', "name address email phone")
+  .populate('author', "name address email phone image")
   .populate({
     path:"product",
     select:"author title description images price",
     populate:{
       path:"author",
-      select:"name address email phone"
+      select:"name address email phone image"
     }
   })
  }

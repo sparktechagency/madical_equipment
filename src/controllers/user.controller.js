@@ -107,6 +107,8 @@ const updateProfile = catchAsync(async (req, res) => {
     req.body.image = `/uploads/users/${req.file.filename}`;
   }
 
+  if(req.body?.email) throw new ApiError(httpStatus.BAD_REQUEST, "you can't update email!")
+
   // Set fullName if firstName or lastName is provided
   if (!req.body.fullName && (req.body.firstName || req.body.lastName)) {
     req.body.fullName = `${req.body.firstName || ''} ${req.body.lastName || ''}`.trim();

@@ -7,6 +7,6 @@ const router = express.Router()
 router.post('/create/:id', auth('common'), CreateReport)
 router.get('/all', auth('admin'), GetAllReport)
 router.get('/single/:id', auth('admin'), GetSingleReport)
-router.delete('/delete/:id', auth('admin'), DeleteReport)
+router.delete('/:id', auth('admin'), DeleteReport)
 
 module.exports = router

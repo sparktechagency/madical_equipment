@@ -13,7 +13,6 @@ const productBid = async(product, status)=>{
         isDeleted:false
     }
     if(status) filter.status= status
-    console.log(filter);
 
     return await Bid.find(filter).sort({createdAt:-1}).select("-isDeleted -createdAt -updatedAt").populate('author', "name address").populate({
         path:'product',
@@ -127,7 +126,7 @@ const sendDelivery = async (bid)=>{
 const sendDeliveryComplete = async (bid)=>{
     return await Bid.findByIdAndUpdate(bid,{status:"delivery"},  {new:true})
 }
-
+// get all order 
 const getAllOrder = async(productOwner, status)=>{
 
     let statusItems = ["progress",'shipped']
@@ -179,6 +178,7 @@ const getAllOrder = async(productOwner, status)=>{
                 email:"$bids.author.email",
                 phone:"$bids.author.phone",
                 address:"$bids.author.address",
+                image:"$bids.author.image",
                 bidAmount:"$bids.bidAmount",
                 status:"$bids.status",
                 createdAt:"$bids.createdAt",
@@ -193,6 +193,22 @@ const getAllOrder = async(productOwner, status)=>{
 
     return await Product.aggregate(pipeline)
 }
+
+// get single order by id
+const getSingleOrder = async(prodID)=>{
+    const product = await Product.findOne({_id: new ObjectId(prodID), isDeleted:false}).select("-createdAt -UpdatedAt -isDeleted -author")
+    if(!product) throw new ApiError(httpStatus.NOT_FOUND,"product not found!")
+    if(product.status!=="sold") throw new ApiError(httpStatus.NOT_FOUND,"product not sold!")
+    const bid = await Bid.findOne({product: new ObjectId(prodID), isDeleted:false, status:{$in:["shipped", "delivert","progress"]}}).populate('author', "name address image email phone")
+
+    if(!bid) throw new ApiError(httpStatus.NOT_FOUND, "bid not found!")
+
+    return {
+        product,
+        bid:bid || {}
+    }
+}
+
 module.exports = {
     bidPost,
     productBid,
@@ -202,5 +218,6 @@ module.exports = {
     getAllBid,
     sendDelivery,
     sendDeliveryComplete,
-    getAllOrder
+    getAllOrder,
+    getSingleOrder
 }
