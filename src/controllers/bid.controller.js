@@ -73,7 +73,20 @@ const SelfBid = catchAsync(async (req, res) => {
         data: result,
       })
     );
-    console.log(result);
+  });
+
+const GetUserOrder = catchAsync(async (req, res) => {
+  const {id}= req.user    
+  const {status}= req.query
+  const result = await bidService.getUserOrder(id, status)
+    res.status(httpStatus.OK).json(
+      response({
+        message: 'order retrieved success',
+        status: 'OK',
+        statusCode: httpStatus.OK,
+        data: result,
+      })
+    );
   });
 
 const UserBid = catchAsync(async (req, res) => {
@@ -207,5 +220,6 @@ module.exports = {
     ProductDeliveryCompleted,
     GetAllOrder,
     GetSingleOrder,
-    UserBid
+    UserBid,
+    GetUserOrder
 }

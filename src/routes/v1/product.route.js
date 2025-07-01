@@ -51,6 +51,12 @@ router.get(
 );
 
 router.get(
+  '/top_picked',
+  auth('common'),
+  productController.TopPikedProducts
+);
+
+router.get(
   '/self',
   auth('common'),
   productController.MyProducts

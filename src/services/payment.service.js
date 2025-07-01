@@ -22,7 +22,6 @@ const getAllPayments = async ()=>{
 
 //handlePaymentSuccess
 const handlePaymentSuccess = async (session) => {
-    console.log(session);
     try {
       const {payment_intent, metadata, amount_total} =  session
       // Destructure metadata from session
@@ -41,8 +40,15 @@ const handlePaymentSuccess = async (session) => {
         await Product.findByIdAndUpdate(bidRes.product, {status:"sold"})
         // update seller's balance and total income
         const seller = await User.findByIdAndUpdate(author)
-        seller.currentBalance = seller.currentBalance + ((amount_total/100)*0.9)
-        seller.totalIncome = seller.totalIncome + ((amount_total/100)*0.9)
+
+        //charge amount
+        const chargeAmount = parseInt(process.env.CHARGE_AMOUNT || 10) / 100;
+        const amountAfterFee = amount_total - (chargeAmount * amount_total);
+        // update user current total balance 
+        seller.currentBalance += amountAfterFee;
+        seller.totalIncome += amountAfterFee;
+        // seller.currentBalance = seller.currentBalance + (amount_total - ((parseInt(process.env.CHARGE_AMOUNT)/100)*amount_total))
+        // seller.totalIncome = seller.totalIncome + (amount_total - ((parseInt(process.env.CHARGE_AMOUNT)/100)*amount_total))
         await seller.save()
       // Update SubscriptionPurchase status to "success"
       const updatedSubscription = await Transaction.findByIdAndUpdate(

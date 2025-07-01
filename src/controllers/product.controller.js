@@ -140,13 +140,29 @@ const SingleProduct = catchAsync(async (req, res) => {
 
 // All product 
 const AllProducts = catchAsync(async (req, res) => {
-    const {category} = req.query
+    const {category, name, price} = req.query
 
-  const products = await productService.allProducts({category});
+  const products = await productService.allProducts({category, name, price});
 
   res.status(httpStatus.OK).json(
     response({
       message: 'Products retrieved success',
+      status: 'OK',
+      statusCode: httpStatus.OK,
+      data: products,
+    })
+  );
+});
+
+
+// All product 
+const TopPikedProducts = catchAsync(async (req, res) => {
+
+  const products = await productService.topPikedProduct();
+
+  res.status(httpStatus.OK).json(
+    response({
+      message: 'top picked products retrieved success',
       status: 'OK',
       statusCode: httpStatus.OK,
       data: products,
@@ -212,6 +228,7 @@ module.exports = {
   declineProduct,
   SingleProduct,
   AllProducts,
+  TopPikedProducts,
   MyProducts,
   ProductsRequest,
   SellerProducts

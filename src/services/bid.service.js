@@ -17,9 +17,16 @@ const productBid = async(product, status)=>{
     return await Bid.find(filter).sort({createdAt:-1}).select("-isDeleted -createdAt -updatedAt").populate('author', "name address").populate({
         path:'product',
         select:"-createdAt -updatedAt -isDeleted",
-        populate:{path:"author",
-            select:"name address",
-        }
+        populate:[
+            {
+                path:"author",
+                select:"name address",
+            },
+            {
+                path:"category",
+                select:"name image",
+            }
+    ]
     })
 }
 
@@ -28,15 +35,45 @@ const selfBid = async(user, status)=>{
     const filter ={author: new ObjectId(user)}
     if(status) filter.status = status
     
-    const products = await Bid.find(filter).sort({createdAt:-1}).select("-isDeleted -createdAt -updatedAt").populate({
+    const products = await Bid.find(filter).sort({createdAt:-1}).select("-isDeleted -updatedAt").populate([
+        {
         path:'product',
         select:"-createdAt -updatedAt -isDeleted",
         populate:{path:"author",
             select:"name email phone address image ",
+            }
         }
-    })
+      
+])
 
     return { author, products}
+}
+
+const getUserOrder =  async(user, status)=>{
+
+    const orderStatus =  ["progress", "shipped", "delivery"]
+
+    const filter ={author: new ObjectId(user)}
+    // if(status) filter.status = status
+    status ? filter.status = status : filter.status = {$in:orderStatus}
+
+    
+    const products = await Bid.find(filter).sort({createdAt:-1}).select("-isDeleted  -updatedAt").populate([
+        {
+            path:'product',
+            select:"-createdAt -updatedAt -isDeleted",
+            populate:{path:"author",
+                select:"name email phone address image ",
+            }
+        },
+        {
+            path:"author",
+            select:"name email phone address image ",
+            
+        },
+])
+
+    return products
 }
 
 const getBidById = async(id)=>{
@@ -104,6 +141,7 @@ const getAllBid = async (productHoner, role, status) =>{
         'author.image':1,
         'product.title':1,
         'product.author':1,
+        'product._id':1,
         "product.category":1,
         "product.price":1,
         "product.description":1,
@@ -126,7 +164,7 @@ const sendDelivery = async (bid)=>{
 const sendDeliveryComplete = async (bid)=>{
     return await Bid.findByIdAndUpdate(bid,{status:"delivery"},  {new:true})
 }
-// get all order 
+// get all order seller & admin
 const getAllOrder = async(productOwner, status)=>{
 
     let statusItems = ["progress",'shipped']
@@ -194,7 +232,7 @@ const getAllOrder = async(productOwner, status)=>{
     return await Product.aggregate(pipeline)
 }
 
-// get single order by id
+// get single order by id seller & admin
 const getSingleOrder = async(prodID)=>{
     const product = await Product.findOne({_id: new ObjectId(prodID), isDeleted:false}).select("-createdAt -UpdatedAt -isDeleted -author")
     if(!product) throw new ApiError(httpStatus.NOT_FOUND,"product not found!")
@@ -219,5 +257,6 @@ module.exports = {
     sendDelivery,
     sendDeliveryComplete,
     getAllOrder,
-    getSingleOrder
+    getSingleOrder,
+    getUserOrder
 }

@@ -12,8 +12,8 @@ const CreateReport = catchAsync(async(req, res)=>{
     const {_id:author} = req.user
     //product validation
     const isExistBid = await getBidById(bid)
-    console.log({author, user:isExistBid.author._id});
-    if(!isExistBid) throw new ApiError(httpStatus.NOT_FOUND, 'product not found !')
+    // console.log({author, user:isExistBid.author._id});
+    if(!isExistBid) throw new ApiError(httpStatus.NOT_FOUND, 'product not found provide valid bid !')
     if(isExistBid.author._id.toString()!==author.toString()) throw new ApiError(httpStatus.NOT_FOUND, 'you are not eligible for report this product !')
     //validation
     if(!title || !description) throw new ApiError(httpStatus.BAD_REQUEST, "title and description are required !")    

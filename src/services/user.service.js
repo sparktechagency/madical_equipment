@@ -15,9 +15,7 @@ const createUser = async (userBody) => {
     sendEmailVerification(userBody.email, oneTimeCode);
   // }
   //  await User.create({ ...userBody, oneTimeCode });
-   await User.create({ ...userBody,    oneTimeCode: {
-    code: oneTimeCode,
-  }, });
+   await User.create({ ...userBody,    oneTimeCode});
    return oneTimeCode
 };
 

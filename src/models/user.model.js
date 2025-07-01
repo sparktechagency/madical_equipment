@@ -24,10 +24,6 @@ const userSchema = mongoose.Schema(
         }
       },
     },
-    phone: {
-      type: String,
-      required: true,
-    },
     image: {
       type: String,
       required: [true, "Image is must be Required"],
