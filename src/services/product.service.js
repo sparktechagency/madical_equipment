@@ -23,17 +23,26 @@ const getSingleProductById = async (id) => {
 
 // all products
 const allProducts = async ( payload, isDeleted=false, role) => {
+
+  // filter
     const filter = {
         isDeleted,
         status :"approve"
     }
+
     // all 
     if (payload?.category) filter.category = new ObjectId(payload?.category)
+    if (payload?.title)  filter.title = { $regex: payload.title, $options: "i" }; 
     if (payload.status==="pending") filter.status = payload?.status
     if (role==='admin' && filter.status) filter.status = payload.status
+    const sortprice = parseInt(payload.sortprice) || -1
+
+    //sort 
+    const  sort = {}
+    sortprice ? sort.price = sortprice : sort.createdAt = -1
 
     // query data 
-    return await Product.find(filter).populate('author', "name address").populate('category').sort({createdAt:-1}).select('-createdAt -updatedAt -isDeleted');
+    return await Product.find(filter).populate('author', "name address").populate('category').sort(sort).select('-createdAt -updatedAt -isDeleted');
 
 };
 
@@ -78,9 +87,7 @@ const topPikedProduct = async () => {
   const products = await Bid.aggregate([
     {
       $match : {
-        status :"pending",
-        // isWinner:false,
-        isDeleted:false
+        status :{$in:["pending","progress"]}
       }
     },
     {
@@ -136,13 +143,7 @@ const topPikedProduct = async () => {
 
   return products
  };
-
-//  topPikedProduct()
-
  
-
-
-
 //delete product
 const softDeleteProduct = async (id) => {
   return await Product.findByIdAndUpdate(id, { isDeleted: true });

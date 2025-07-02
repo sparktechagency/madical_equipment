@@ -140,9 +140,9 @@ const SingleProduct = catchAsync(async (req, res) => {
 
 // All product 
 const AllProducts = catchAsync(async (req, res) => {
-    const {category, name, price} = req.query
+    const {category, name, price, title, sortprice} = req.query
 
-  const products = await productService.allProducts({category, name, price});
+  const products = await productService.allProducts({category, name, price, title, sortprice});
 
   res.status(httpStatus.OK).json(
     response({
