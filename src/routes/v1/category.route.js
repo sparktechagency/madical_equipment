@@ -18,7 +18,6 @@ router
     convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),    categoryController.CreateCategory
   )
   .get(
-    auth('common'),
     categoryController.GetAllCategories
   );
 

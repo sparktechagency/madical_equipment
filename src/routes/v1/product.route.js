@@ -46,13 +46,11 @@ router.patch(
 
 router.get(
   '/all',
-  auth('common'),
   productController.AllProducts
 );
 
 router.get(
   '/top_picked',
-  auth('common'),
   productController.TopPikedProducts
 );
 
@@ -76,7 +74,7 @@ router.get(
 
 router.get(
   '/request',
-  auth('common'),
+  // auth('common'),
   productController.ProductsRequest
 );
 

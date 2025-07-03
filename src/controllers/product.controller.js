@@ -206,8 +206,7 @@ const {category, status} = req.query
 
 // requested product list
 const ProductsRequest = catchAsync(async (req, res) => {
-  const {role} = req.user
-  const products = await productService.allProducts({status:"pending"}, false, role);
+  const products = await productService.allProducts({status:"pending"}, false, req?.user?.role);
 
   res.status(httpStatus.OK).json(
     response({
