@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
+const jwt = require('jsonwebtoken');
 const response = require("../config/response");
 const {
   authService,
@@ -8,7 +9,10 @@ const {
   tokenService,
   emailService,
 } = require("../services");
+const { User } = require("../models");
+const { generateAuthTokens } = require("../services/token.service");
 
+// register
 const register = catchAsync(async (req, res) => {
   const { email,name,phone, address, ...rest } = req.body;
   const isUser = await userService.getUserByEmail(email);
@@ -53,6 +57,7 @@ const register = catchAsync(async (req, res) => {
   );
 });
 
+// login
 const login = catchAsync(async (req, res) => {
   const { email, password, fcmToken } = req.body;
   const isUser = await userService.getUserByEmail(email);
@@ -68,18 +73,6 @@ const login = catchAsync(async (req, res) => {
   }
   const user = await authService.loginUserWithEmailAndPassword(email, password, fcmToken);
 
-  setTimeout(async () => {
-    try {
-      user.oneTimeCode = null;
-      user.isResetPassword = false;
-      await user.save();
-      console.log("oneTimeCode reset to null after 3 minute");
-    } catch (error) {
-      ApiError;
-      console.error("Error updating oneTimeCode:", error);
-    }
-  }, 180000); // 3 minute in milliseconds
-
   const tokens = await tokenService.generateAuthTokens(user);
   res.status(httpStatus.OK).json(
     response({
@@ -91,6 +84,46 @@ const login = catchAsync(async (req, res) => {
   );
 });
 
+const GoogleLogin = catchAsync(async (req, res) => {
+
+ const {credential} = req.body;
+ if(!credential) throw new ApiError(httpStatus.BAD_REQUEST, "invalid request!")
+  const decode = jwt.decode(credential);
+  if(!decode) throw new ApiError(httpStatus.BAD_REQUEST, "invalid request!")
+ console.log(decode);
+ let user = await User.findOne({ email: decode.email });
+ if (user?.isDeleted) throw new ApiError(httpStatus.BAD_REQUEST, "This Account is Deleted");
+
+ if (!user) {
+   user = new User({
+    //  googleId: id, 
+     name: decode.name,
+     image: decode.picture, 
+     email: decode.email, 
+   });
+   await user.save();  
+ }
+
+
+
+ const tokens = await generateAuthTokens(user);
+
+//  const data = JSON.stringify({user, tokens});
+
+//  res.redirect(`http://maniknew3000.sobhoy.com?data=${data}`);
+
+ res.status(httpStatus.OK).json(
+  response({
+    message: "login Successful",
+    status: "OK",
+    statusCode: httpStatus.OK,
+    data:{user,tokens}
+  })
+);
+});
+
+
+// logout
 const logout = catchAsync(async (req, res) => {
   await authService.logout(req.body.refreshToken);
   res.status(httpStatus.OK).json(
@@ -102,11 +135,13 @@ const logout = catchAsync(async (req, res) => {
   );
 });
 
+// refresh Tokens
 const refreshTokens = catchAsync(async (req, res) => {
   // const tokens = await authService.refreshAuth(req.body.refreshToken);
   // res.send({ ...tokens });
 });
 
+// forgot Password
 const forgotPassword = catchAsync(async (req, res) => {
   const user = await userService.getUserByEmail(req.body.email);
   if (!user) {
@@ -142,6 +177,7 @@ const forgotPassword = catchAsync(async (req, res) => {
   );
 });
 
+// reset Password
 const resetPassword = catchAsync(async (req, res) => {
   await authService.resetPassword(req.body.password, req.body.email);
   res.status(httpStatus.OK).json(
@@ -154,6 +190,7 @@ const resetPassword = catchAsync(async (req, res) => {
   );
 });
 
+// change Password
 const changePassword = catchAsync(async (req, res) => {
   await authService.changePassword(req.user, req.body);
   res.status(httpStatus.OK).json(
@@ -166,12 +203,14 @@ const changePassword = catchAsync(async (req, res) => {
   );
 });
 
+// send Verification Email
 const sendVerificationEmail = catchAsync(async (req, res) => {
   // const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.user);
   // await emailService.sendVerificationEmail(req.user.email, verifyEmailToken);
   // res.status(httpStatus.OK).send();
 });
 
+// verify Email
 const verifyEmail = catchAsync(async (req, res) => {
   const user = await authService.verifyEmail(req.body, req.query);
 
@@ -188,6 +227,7 @@ const verifyEmail = catchAsync(async (req, res) => {
   // res.status(httpStatus.OK).send();
 });
 
+// delete Me
 const deleteMe = catchAsync(async (req, res) => {
   const user = await authService.deleteMe(req.body.password, req.user);
   res.status(httpStatus.OK).json(
@@ -203,6 +243,7 @@ const deleteMe = catchAsync(async (req, res) => {
 module.exports = {
   register,
   login,
+  GoogleLogin,
   logout,
   refreshTokens,
   forgotPassword,

@@ -7,12 +7,15 @@ const userFileUploadMiddleware = require("../../middlewares/fileUpload");
 const UPLOADS_FOLDER_USERS = "./public/uploads/users";
 const uploadUsers = userFileUploadMiddleware(UPLOADS_FOLDER_USERS);
 
-
 const router = express.Router();
 
 router.post('/register', validate(authValidation.register), authController.register);
 router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
-router.post('/login', validate(authValidation.login), authController.login);
+
+router.get('/login', validate(authValidation.login), authController.login);
+// google login
+router.post('/google', authController.GoogleLogin)
+
 router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword);
 router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
 router.post('/change-password', auth('common'),validate(authValidation.changePassword), authController.changePassword);

@@ -19,6 +19,10 @@ const createUser = async (userBody) => {
    return oneTimeCode
 };
 
+const createGoogleAthenticateUser = async (userBody) => {
+   return await User.create({ ...userBody, role:"user", isEmailVerified:true});
+};
+
 const queryUsers = async (filter, options) => {
   const query = {};
 
@@ -116,6 +120,7 @@ const isUpdateUser = async (userId, updateBody) => {
 
 module.exports = {
   createUser,
+  createGoogleAthenticateUser,
   queryUsers,
   getUserById,
   getUserByEmail,

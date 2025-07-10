@@ -68,7 +68,7 @@ router.get(
 
 router.get(
   '/single/:id',
-  auth('common'),
+  // auth('common'),
   productController.SingleProduct
 );
 

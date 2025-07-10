@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require('express-session');
 const helmet = require("helmet");
 const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -39,6 +40,10 @@ app.use(
     },
   })
 );
+
+app.use(session({ secret: 'your-session-secret', resave: true, saveUninitialized: true }));
+
+app.use(passport.session());
 
 // parse json request body
 app.use(express.json());
