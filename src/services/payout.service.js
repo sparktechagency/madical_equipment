@@ -20,8 +20,14 @@ const createPayoutRequest = async ({ author, amount }) => {
   return payout;
 };
 
-const getAllPayoutRequests = async () => {
-  return Payout.find().populate("author", "name email currentBalance stripe phone").sort({createdAt:-1});
+const getAllPayoutRequests = async (status) => {
+  const filter = {}
+  if(status) filter.status = status
+  return Payout.find(filter).populate("author", "name email currentBalance stripe phone").sort({createdAt:-1});
+};
+const sellerSelfPayoutHistory = async (author) => {
+  return Payout.find({author: new Object(author)})
+  // .populate("author", "name email currentBalance stripe phone").sort({createdAt:-1});
 };
 
 const getPayoutRequestById = async (id) => {
@@ -48,6 +54,7 @@ const updatePayoutStatus = async (id, payload) => {
 module.exports = {
     createPayoutRequest,
     getAllPayoutRequests,
+    sellerSelfPayoutHistory,
     getPayoutRequestById,
     updatePayoutStatus,
     // createStripeAccount

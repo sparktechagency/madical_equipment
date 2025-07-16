@@ -12,7 +12,7 @@ const router = express.Router();
 router.post('/register', validate(authValidation.register), authController.register);
 router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
 
-router.get('/login', validate(authValidation.login), authController.login);
+router.post('/login', validate(authValidation.login), authController.login);
 // google login
 router.post('/google', authController.GoogleLogin)
 

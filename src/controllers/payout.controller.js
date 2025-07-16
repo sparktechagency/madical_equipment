@@ -6,6 +6,7 @@ const {
   getAllPayoutRequests,
   getPayoutRequestById,
   updatePayoutStatus,
+  sellerSelfPayoutHistory,
 
   // createStripeAccount,
 } = require("../services/payout.service");
@@ -25,52 +26,23 @@ const CreatePayout = catchAsync(async (req, res) => {
   });
 });
 
-// crete seller stripe account 
-// const CreateStripeAccount = catchAsync(async (req, res) => {
-//   const { id: author } = req.user;
-
-//   const result = await createStripeAccount(author);
-
-//   res.status(httpStatus.CREATED).json({
-//     message: "account ",
-//     statusCode: httpStatus.CREATED,
-//     data: result,
-//   });
-// });
-
-// seller onboarding stripe account is complete 
-// const OnBoardingStripeAccount = catchAsync(async (req, res) => {
-//   const { id:sellerId } = req.query; // Get sellerId from query parameters
-
-//       const seller = await User.findById(sellerId);
-//       if (!seller || !seller.stripeAccountId) throw new ApiError (httpStatus.NOT_FOUND, 'Seller or Stripe Account not found!');
-
-//       const account = await stripe.accounts.retrieve(seller.stripeAccountId);
-
-//       if (account.details_submitted && account.capabilities.transfers.status === 'active') {
-//           // Seller has successfully completed onboarding and can receive payouts
-//           console.log(`Seller ${sellerId} Stripe onboarding completed successfully.`);
-//           // You might want to update a flag in your Seller model: seller.stripeOnboarded = true;
-//           // Redirect to seller dashboard with success message
-//           // res.redirect(`${process.env.FRONTEND_URL}/seller-dashboard?status=stripe_connected_success`);
-//           res.status(httpStatus.OK).json({
-//             message: "stripe onboarding account connect successfully.",
-//             statusCode: httpStatus.OK,
-//             data: account,
-//           });
-//       }
-//   res.status(httpStatus.CREATED).json({
-//     message: "stripe onboarding account connect pending. ",
-//     statusCode: httpStatus.OK,
-//     data: account,
-//   });
-// });
-
-// Admin: Get all payout requests
+// get all payout 
 const GetAllPayouts = catchAsync(async (req, res) => {
-  const payouts = await getAllPayoutRequests();
+  const {status} = req.query
+  const payouts = await getAllPayoutRequests(status);
   res.status(httpStatus.OK).json({
     message: "Payout requests retrieved successfully",
+    statusCode: httpStatus.OK,
+    data: payouts,
+  });
+});
+
+// seller self payout history 
+const SellerSelfPayoutHistory = catchAsync(async (req, res) => {
+  const {id} = req.user
+  const payouts = await sellerSelfPayoutHistory(id);
+  res.status(httpStatus.OK).json({
+    message: "Payout history retrieved successfully",
     statusCode: httpStatus.OK,
     data: payouts,
   });
@@ -114,5 +86,6 @@ module.exports = {
   GetAllPayouts,
   GetSinglePayout,
   UpdatePayoutStatus,
+  SellerSelfPayoutHistory
 
 };

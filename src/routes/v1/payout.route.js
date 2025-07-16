@@ -5,6 +5,7 @@ const {
   GetAllPayouts,
   GetSinglePayout,
   UpdatePayoutStatus,
+  SellerSelfPayoutHistory,
 } = require("../../controllers/payout.controller");
 
 const auth = require("../../middlewares/auth");
@@ -22,6 +23,8 @@ router.post("/create", validate(createPayoutValidation), auth('seller'),  Create
 
 // Admin gets all payout requests
 router.get("/all", auth("admin"), GetAllPayouts);
+// seller gets all payout requests
+router.get("/self", auth("seller"), SellerSelfPayoutHistory);
 
 // Admin gets single payout by id
 router.post("/single", auth("admin"), GetSinglePayout);
