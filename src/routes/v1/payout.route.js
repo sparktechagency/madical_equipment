@@ -10,9 +10,11 @@ const {
 
 const auth = require("../../middlewares/auth");
 const { createPayoutValidation } = require("../../validations/payout.validation");
-const convertHeicToPngMiddleware = require("../../middlewares/converter");
-const UPLOADS_FOLDER_USERS = "./public/uploads/payment";
-const userFileUploadMiddleware = require("../../middlewares/fileUpload");
+// const convertHeicToPngMiddleware = require("../../middlewares/converter");
+const UPLOADS_FOLDER_USERS = "payment";
+// const UPLOADS_FOLDER_USERS = "./public/uploads/payment";
+const userFileUploadMiddleware = require("../../middlewares/fileUploader");
+// const userFileUploadMiddleware = require("../../middlewares/fileUpload");
 
 const uploadUsers = userFileUploadMiddleware(UPLOADS_FOLDER_USERS);
 
@@ -33,7 +35,7 @@ router.post("/single", auth("admin"), GetSinglePayout);
 router.post("/status/:id",
    auth("admin"),
    [uploadUsers.single("image")],
-   convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
+  //  convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
     UpdatePayoutStatus);
 
 module.exports = router;

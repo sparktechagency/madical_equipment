@@ -9,7 +9,7 @@ const CreateCategory = catchAsync(async (req, res) => {
   const { name } = req.body;
 
   if(!req?.file) throw new ApiError(httpStatus.BAD_REQUEST, "please provide category image!")
-    const image = 'uploads/category/'+req.file.filename
+    const image = req.file.location
 
   const result = await categoryService.createCategory({ name, image });
 
@@ -58,7 +58,7 @@ const UpdateCategoryName = catchAsync(async (req, res) => {
 
   const payload = {name}
 
-if(req.file) payload.image = 'uploads/category/'+req.file.filename
+if(req.file) payload.image = req.file.location
 
   await categoryService.updateCategory(id, payload);
 

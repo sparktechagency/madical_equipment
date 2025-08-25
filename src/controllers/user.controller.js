@@ -104,7 +104,7 @@ const updateUser = catchAsync(async (req, res) => {
 
 const updateProfile = catchAsync(async (req, res) => {
   if (req.file) {
-    req.body.image = `/uploads/users/${req.file.filename}`;
+    req.body.image = req.file.location;
   }
 
   if(req.body?.email) throw new ApiError(httpStatus.BAD_REQUEST, "you can't update email!")

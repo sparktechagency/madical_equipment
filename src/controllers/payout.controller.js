@@ -26,9 +26,9 @@ const CreatePayout = catchAsync(async (req, res) => {
   });
 });
 
-// get all payout 
+// get all payout
 const GetAllPayouts = catchAsync(async (req, res) => {
-  const {status} = req.query
+  const { status } = req.query;
   const payouts = await getAllPayoutRequests(status);
   res.status(httpStatus.OK).json({
     message: "Payout requests retrieved successfully",
@@ -37,9 +37,9 @@ const GetAllPayouts = catchAsync(async (req, res) => {
   });
 });
 
-// seller self payout history 
+// seller self payout history
 const SellerSelfPayoutHistory = catchAsync(async (req, res) => {
-  const {id} = req.user
+  const { id } = req.user;
   const payouts = await sellerSelfPayoutHistory(id);
   res.status(httpStatus.OK).json({
     message: "Payout history retrieved successfully",
@@ -52,7 +52,8 @@ const SellerSelfPayoutHistory = catchAsync(async (req, res) => {
 const GetSinglePayout = catchAsync(async (req, res) => {
   const { id } = req.params;
   const payout = await getPayoutRequestById(id);
-  if (!payout) throw new ApiError(httpStatus.NOT_FOUND, "Payout request not found");
+  if (!payout)
+    throw new ApiError(httpStatus.NOT_FOUND, "Payout request not found");
 
   res.status(httpStatus.OK).json({
     message: "Payout request retrieved successfully",
@@ -65,11 +66,16 @@ const GetSinglePayout = catchAsync(async (req, res) => {
 const UpdatePayoutStatus = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
-  if(!["approve", "decline"].includes(status)) throw new ApiError(httpStatus.BAD_REQUEST, "please provide valid status:[approve, decline]!")
-  const payload = {status}
-  // image validation 
-  if (status==='approve' && !req.file) throw new ApiError(httpStatus.BAD_REQUEST, "payment prove image required!")
-  payload.image = `uploads/payment/${req?.file?.filename}`
+  if (!["approve", "decline"].includes(status))
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "please provide valid status:[approve, decline]!"
+    );
+  const payload = { status };
+  // image validation
+  if (status === "approve" && !req.file)
+    throw new ApiError(httpStatus.BAD_REQUEST, "payment prove image required!");
+  payload.image = `${req?.file?.location}`;
 
   const payout = await updatePayoutStatus(id, payload);
 
@@ -80,12 +86,10 @@ const UpdatePayoutStatus = catchAsync(async (req, res) => {
   });
 });
 
-
 module.exports = {
   CreatePayout,
   GetAllPayouts,
   GetSinglePayout,
   UpdatePayoutStatus,
-  SellerSelfPayoutHistory
-
+  SellerSelfPayoutHistory,
 };

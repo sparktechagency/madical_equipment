@@ -1,40 +1,40 @@
-const express = require('express');
-const auth = require('../../middlewares/auth');
-const categoryController = require('../../controllers/category.controller');
-const userFileUploadMiddleware = require("../../middlewares/fileUpload");
-const convertHeicToPngMiddleware = require('../../middlewares/converter');
+const express = require("express");
+const auth = require("../../middlewares/auth");
+const categoryController = require("../../controllers/category.controller");
+const userFileUploadMiddleware = require("../../middlewares/fileUploader");
+// const userFileUploadMiddleware = require("../../middlewares/fileUpload");
 
-const UPLOADS_FOLDER_USERS = "./public/uploads/category";
+const UPLOADS_FOLDER_USERS = "category";
+// const UPLOADS_FOLDER_USERS = "./public/uploads/category";
 
 const uploadUsers = userFileUploadMiddleware(UPLOADS_FOLDER_USERS);
 
 const router = express.Router();
 
 router
-  .route('/')
+  .route("/")
   .post(
-    auth('admin'), // only admin allowed
+    auth("admin"), // only admin allowed
     [uploadUsers.single("image")],
-    convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),    categoryController.CreateCategory
+    // convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
+    categoryController.CreateCategory
   )
-  .get(
-    categoryController.GetAllCategories
-  );
+  .get(categoryController.GetAllCategories);
 
-  router.get('/single/:id', auth('common'), categoryController.GetSingleCategories)
-
+router.get(
+  "/single/:id",
+  auth("common"),
+  categoryController.GetSingleCategories
+);
 
 router
-  .route('/:id')
+  .route("/:id")
   .patch(
-    auth('admin'),
+    auth("admin"),
     [uploadUsers.single("image")],
-    convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
+    // convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
     categoryController.UpdateCategoryName
   )
-  .delete(
-    auth('admin'),
-    categoryController.DeleteCategory
-  );
+  .delete(auth("admin"), categoryController.DeleteCategory);
 
 module.exports = router;

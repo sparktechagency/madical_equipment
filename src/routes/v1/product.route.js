@@ -1,11 +1,13 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
-const userFileUploadMiddleware = require('../../middlewares/fileUpload');
+const userFileUploadMiddleware = require('../../middlewares/fileUploader');
+// const userFileUploadMiddleware = require('../../middlewares/fileUpload');
 const productValidation = require('../../validations/product.validation');
 const productController = require('../../controllers/product.controller');
 
-const UPLOADS_FOLDER = './public/uploads/products';
+const UPLOADS_FOLDER = 'products';
+// const UPLOADS_FOLDER = './public/uploads/products';
 const upload = userFileUploadMiddleware(UPLOADS_FOLDER);
 
 const router = express.Router();

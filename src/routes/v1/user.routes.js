@@ -3,9 +3,11 @@ const auth = require("../../middlewares/auth");
 const validate = require("../../middlewares/validate");
 const userValidation = require("../../validations/user.validation");
 const userController = require("../../controllers/user.controller");
-const userFileUploadMiddleware = require("../../middlewares/fileUpload");
+const userFileUploadMiddleware = require("../../middlewares/fileUploader");
+// const userFileUploadMiddleware = require("../../middlewares/fileUpload");
 const convertHeicToPngMiddleware = require("../../middlewares/converter");
-const UPLOADS_FOLDER_USERS = "./public/uploads/users";
+// const UPLOADS_FOLDER_USERS = "./public/uploads/users";
+const UPLOADS_FOLDER_USERS = "users";
 
 const uploadUsers = userFileUploadMiddleware(UPLOADS_FOLDER_USERS);
 
@@ -19,7 +21,7 @@ router
     auth("common"),
     validate(userValidation.updateUser),
     [uploadUsers.single("image")],
-    convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
+    // convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
     userController.updateProfile
   );
 
