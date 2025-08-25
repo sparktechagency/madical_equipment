@@ -1,8 +1,7 @@
 const httpStatus = require("http-status");
-const { Product, Bid, User, Payout } = require("../models");
+const { Product, Bid, User} = require("../models");
 const ApiError = require("../utils/ApiError");
 const { findCategoryByID } = require("./category.service");
-const payoutModel = require("../models/payout.model");
 const { ObjectId } = require("mongoose").Types;
 
 //create product
