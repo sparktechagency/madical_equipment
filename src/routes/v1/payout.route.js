@@ -10,7 +10,6 @@ const {
 
 const auth = require("../../middlewares/auth");
 const { createPayoutValidation } = require("../../validations/payout.validation");
-// const convertHeicToPngMiddleware = require("../../middlewares/converter");
 const UPLOADS_FOLDER_USERS = "payment";
 // const UPLOADS_FOLDER_USERS = "./public/uploads/payment";
 const userFileUploadMiddleware = require("../../middlewares/fileUploader");
@@ -24,16 +23,16 @@ const router = express.Router();
 router.post("/create", validate(createPayoutValidation), auth('seller'),  CreatePayout);
 
 // Admin gets all payout requests
-router.get("/all", auth("admin"), GetAllPayouts);
+router.get("/all", auth("commonAdmin"), GetAllPayouts);
 // seller gets all payout requests
 router.get("/self", auth("seller"), SellerSelfPayoutHistory);
 
 // Admin gets single payout by id
-router.post("/single", auth("admin"), GetSinglePayout);
+router.post("/single", auth("commonAdmin"), GetSinglePayout);
 
 // Admin approves or declines payout
 router.post("/status/:id",
-   auth("admin"),
+   auth("commonAdmin"),
    [uploadUsers.single("image")],
   //  convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
     UpdatePayoutStatus);

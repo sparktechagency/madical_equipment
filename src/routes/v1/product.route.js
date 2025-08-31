@@ -36,13 +36,13 @@ router.delete(
 
 router.patch(
   '/approve/:id',
-  auth('admin'),
+  auth('commonAdmin'),
   productController.approveProduct
 );
 
 router.patch(
   '/decline/:id',
-  auth('admin'),
+  auth('commonAdmin'),
   productController.declineProduct
 );
 

@@ -4,7 +4,7 @@ const allRoles = {
   user: ["common", "user"],
   seller: ["common", "seller", "sellerAdmin"],
   admin: ["common", "commonAdmin", "admin", "sellerAdmin"],
-  superAdmin: ["common", "commonAdmin", "superAdmin"],
+  superAdmin: ["common", "commonAdmin", "superAdmin", "sellerAdmin"],
 };
 
 const roles = Object.keys(allRoles);

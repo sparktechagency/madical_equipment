@@ -14,7 +14,7 @@ const router = express.Router();
 router
   .route("/")
   .post(
-    auth("admin"), // only admin allowed
+    auth("commonAdmin"), // only admin allowed
     [uploadUsers.single("image")],
     // convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
     categoryController.CreateCategory
@@ -30,11 +30,11 @@ router.get(
 router
   .route("/:id")
   .patch(
-    auth("admin"),
+    auth("commonAdmin"),
     [uploadUsers.single("image")],
     // convertHeicToPngMiddleware(UPLOADS_FOLDER_USERS),
     categoryController.UpdateCategoryName
   )
-  .delete(auth("admin"), categoryController.DeleteCategory);
+  .delete(auth("commonAdmin"), categoryController.DeleteCategory);
 
 module.exports = router;

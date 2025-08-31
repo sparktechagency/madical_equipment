@@ -6,22 +6,22 @@ const { GetPrivacy, UpsertPrivacy, GetAboutUs, UpsertAboutUs, GetTermsAndConditi
 
 // Privacy Policy
 router.get("/privacy", GetPrivacy);
-router.post("/privacy", auth("admin"), UpsertPrivacy);
+router.post("/privacy", auth("commonAdmin"), UpsertPrivacy);
 
 // About Us
 router.get("/about_us", GetAboutUs);
-router.post("/about_us", auth("admin"), UpsertAboutUs);
+router.post("/about_us", auth("commonAdmin"), UpsertAboutUs);
 
 // Terms & Conditions
 router.get("/terms", GetTermsAndCondition);
-router.post("/terms", auth("admin"), UpsertTermsAndCondition);
+router.post("/terms", auth("commonAdmin"), UpsertTermsAndCondition);
 
 // Seller Agreement
 router.get("/seller_agreement", GetSellerAgreement);
-router.post("/seller_agreement", auth("admin"), UpsertSellerAgreement);
+router.post("/seller_agreement", auth("commonAdmin"), UpsertSellerAgreement);
 
 // User Agreement
 router.get("/user_agreement", GetUserAgreement);
-router.post("/user_agreement", auth("admin"), UpsertUserAgreement);
+router.post("/user_agreement", auth("commonAdmin"), UpsertUserAgreement);
 
 module.exports = router;

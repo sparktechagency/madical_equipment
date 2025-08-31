@@ -18,9 +18,9 @@ router.post("/create",
 CreateContactMessage);
 
 // Admin routes
-router.get("/all", auth("admin"), GetAllContactMessages);
-router.get("/single/:id", auth("admin"), GetSingleContactMessage);
-router.patch("/read/:id", auth("admin"), MarkContactMessageRead);
-router.delete("/delete/:id", auth("admin"), DeleteContactMessage);
+router.get("/all", auth("commonAdmin"), GetAllContactMessages);
+router.get("/single/:id", auth("commonAdmin"), GetSingleContactMessage);
+router.patch("/read/:id", auth("commonAdmin"), MarkContactMessageRead);
+router.delete("/delete/:id", auth("commonAdmin"), DeleteContactMessage);
 
 module.exports = router;

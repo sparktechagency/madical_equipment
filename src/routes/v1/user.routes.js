@@ -5,7 +5,6 @@ const userValidation = require("../../validations/user.validation");
 const userController = require("../../controllers/user.controller");
 const userFileUploadMiddleware = require("../../middlewares/fileUploader");
 // const userFileUploadMiddleware = require("../../middlewares/fileUpload");
-const convertHeicToPngMiddleware = require("../../middlewares/converter");
 // const UPLOADS_FOLDER_USERS = "./public/uploads/users";
 const UPLOADS_FOLDER_USERS = "users";
 
@@ -25,7 +24,7 @@ router
     userController.updateProfile
   );
 
-  router.get('/all', auth('admin'), userController.getUsers)
+  router.get('/all', auth('commonAdmin'), userController.getUsers)
 
   
 

@@ -5,8 +5,8 @@ const auth = require("../../middlewares/auth");
 const router = express.Router()
 
 router.post('/create/:id', auth('common'), CreateReport)
-router.get('/all', auth('admin'), GetAllReport)
-router.get('/single/:id', auth('admin'), GetSingleReport)
-router.delete('/:id', auth('admin'), DeleteReport)
+router.get('/all', auth('commonAdmin'), GetAllReport)
+router.get('/single/:id', auth('commonAdmin'), GetSingleReport)
+router.delete('/:id', auth('commonAdmin'), DeleteReport)
 
 module.exports = router
