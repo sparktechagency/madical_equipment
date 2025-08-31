@@ -1,11 +1,11 @@
 const express = require("express");
-const session = require('express-session');
+const session = require("express-session");
 const helmet = require("helmet");
 const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
 const compression = require("compression");
 const cors = require("cors");
-const bodyParser = require("body-parser")
+const bodyParser = require("body-parser");
 const passport = require("passport");
 const httpStatus = require("http-status");
 const status = require("express-status-monitor");
@@ -16,7 +16,7 @@ const { authLimiter } = require("./middlewares/rateLimiter");
 const routes = require("./routes/v1");
 const { errorConverter, errorHandler } = require("./middlewares/error");
 const ApiError = require("./utils/ApiError");
-const cron = require('node-cron');
+const cron = require("node-cron");
 const { selectWinner } = require("./services/product.service");
 
 const app = express();
@@ -32,7 +32,6 @@ app.use(express.static("public"));
 // set security HTTP headers
 app.use(helmet());
 
-
 app.use(
   bodyParser.json({
     verify: function (req, res, buf) {
@@ -41,7 +40,13 @@ app.use(
   })
 );
 
-app.use(session({ secret: 'your-session-secret', resave: true, saveUninitialized: true }));
+app.use(
+  session({
+    secret: "your-session-secret",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 app.use(passport.session());
 
@@ -66,17 +71,15 @@ app.options("*", cors());
 app.use(passport.initialize());
 passport.use("jwt", jwtStrategy);
 
-// cron jobs 
-cron.schedule('0 0 * * *', () => {
-  try{
-    selectWinner()
-
-  }catch(e){
+// cron jobs
+cron.schedule("0 0 * * *", () => {
+  try {
+    selectWinner();
+  } catch (e) {
     console.log(e);
   }
-  console.log('running a task every 2 minutes');
+  console.log("running a task every 2 minutes");
 });
-
 
 // limit repeated failed requests to auth endpoints
 if (config.env === "production") {
@@ -88,9 +91,9 @@ app.use(status());
 
 // v1 api routes
 app.use("/api/v1", routes);
-app.get('/', (req, res)=>{
-  res.send('medical equipment server is running ...')
-})
+app.get("/", (req, res) => {
+  res.send("medical equipment server is running successfully ...");
+});
 //testing API is alive
 app.get("/test", (req, res) => {
   let userIP =
