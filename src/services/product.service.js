@@ -50,9 +50,8 @@ const allProducts = async (payload, isDeleted = false, role) => {
     .populate("author", "name address")
     .populate("category")
     .sort(sort)
-    .select(" -updatedAt -isDeleted")
-    .limit(10);
-console.log(res);
+    .select(" -createdAt -updatedAt -isDeleted");
+  console.log(res);
   return res;
 };
 
