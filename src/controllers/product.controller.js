@@ -10,7 +10,6 @@ const createProduct = catchAsync(async (req, res) => {
   const { role } = req.user;
 
   const imagePaths = req.files?.image?.map((file) => `${file.location}`);
-  console.log(imagePaths);
   if (!imagePaths || imagePaths.length !== 4) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,

@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const { Product, Bid, User} = require("../models");
+const { Product, Bid, User } = require("../models");
 const ApiError = require("../utils/ApiError");
 const { findCategoryByID } = require("./category.service");
 const { ObjectId } = require("mongoose").Types;
@@ -35,21 +35,26 @@ const allProducts = async (payload, isDeleted = false, role) => {
   // all
   if (payload?.category) filter.category = new ObjectId(payload?.category);
   if (payload?.title) filter.title = { $regex: payload.title, $options: "i" };
-  if (payload.status === "pending") filter.status = payload?.status;
+  if (payload?.status === "pending") filter.status = payload?.status;
   if (role && role === "admin" && filter.status) filter.status = payload.status;
-  const sortprice = parseInt(payload.sortprice) || -1;
+  const sortPrice = parseInt(payload?.sortPrice);
 
   //sort
   const sort = {};
-  sortprice ? (sort.price = sortprice) : (sort.createdAt = -1);
+  sortPrice ? (sort.price = sortPrice) : (sort.createdAt = -1);
 
   // query data
-  return await Product.find(filter)
+  const res = await Product.find(filter)
     .populate("author", "name address")
     .populate("category")
     .sort(sort)
-    .select("-createdAt -updatedAt -isDeleted");
+    .select(" -updatedAt -isDeleted")
+    .limit(10);
+
+  return res;
 };
+
+allProducts();
 
 // self product
 const myProducts = async (author, payload, isDeleted = false) => {
@@ -201,4 +206,3 @@ module.exports = {
   softDeleteProduct,
   selectWinner,
 };
-

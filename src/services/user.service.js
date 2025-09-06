@@ -109,14 +109,7 @@ const isUpdateUser = async (userId, updateBody) => {
   return user;
 };
 
-// const updateAll = async()=>{
-// const res =  await User.updateMany({}, {$set:{
-//     address:"dhaka, bangladesh"
-//   }})
-//   console.log(res);
-// }
 
-// updateAll()
 
 module.exports = {
   createUser,
