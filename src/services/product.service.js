@@ -43,6 +43,8 @@ const allProducts = async (payload, isDeleted = false, role) => {
   const sort = {};
   sortPrice ? (sort.price = sortPrice) : (sort.createdAt = -1);
 
+  console.log(sort);
+
   // query data
   const res = await Product.find(filter)
     .populate("author", "name address")
@@ -50,7 +52,7 @@ const allProducts = async (payload, isDeleted = false, role) => {
     .sort(sort)
     .select(" -updatedAt -isDeleted")
     .limit(10);
-
+console.log(res);
   return res;
 };
 
