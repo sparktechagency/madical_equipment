@@ -55,7 +55,6 @@ const allProducts = async (payload, isDeleted = false, role) => {
   return res;
 };
 
-allProducts();
 
 // self product
 const myProducts = async (author, payload, isDeleted = false) => {
